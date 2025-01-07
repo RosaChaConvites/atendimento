@@ -239,34 +239,41 @@
             document.getElementById('resultado').textContent = `Total: R$${total.toFixed(2)}`;
         }
 
-        document.getElementById('sendWhatsApp').addEventListener('click', function() {
-            const modelo = document.getElementById('modelo');
-            const modeloQtd = parseInt(document.getElementById('quantidade_modelo').value) || 0;
-            const items = [{
-                name: `Modelo: ${modelo.options[modelo.selectedIndex].text}`,
-                price: parseFloat(modelo.value) * modeloQtd
-            }];
+        document.getElementById('sendWhatsApp').addEventListener('click', function () {
+    const modelo = document.getElementById('modelo');
+    const modeloQtd = parseInt(document.getElementById('quantidade_modelo').value) || 0;
+    const items = [{
+        name: `Modelo (${modelo.options[modelo.selectedIndex].text})`,
+        quantity: modeloQtd,
+        price: parseFloat(modelo.value) * modeloQtd
+    }];
 
-            const itensCheckbox = document.querySelectorAll('.item-checkbox');
-            const itensQuantidade = document.querySelectorAll('.item-quantidade');
-            itensCheckbox.forEach((checkbox, index) => {
-                if (checkbox.checked) {
-                    items.push({
-                        name: checkbox.nextElementSibling.textContent.trim(),
-                        price: parseFloat(checkbox.dataset.preco) * (parseInt(itensQuantidade[index].value) || 0)
-                    });
-                }
+    const itensCheckbox = document.querySelectorAll('.item-checkbox');
+    const itensQuantidade = document.querySelectorAll('.item-quantidade');
+    itensCheckbox.forEach((checkbox, index) => {
+        if (checkbox.checked) {
+            const quantidade = parseInt(itensQuantidade[index].value) || 0;
+            const preco = parseFloat(checkbox.dataset.preco);
+            items.push({
+                name: checkbox.nextElementSibling.textContent.trim(),
+                quantity: quantidade,
+                price: preco * quantidade
             });
+        }
+    });
 
-            const total = items.reduce((sum, item) => sum + item.price, 0);
-            const message = items.map(item => `${item.name}: R$${item.price.toFixed(2)}`).join('%0A');
-            const finalMessage = `Olá, segue meu orçamento:%0A%0A${message}%0A%0ATotal: R$${total.toFixed(2)}`;
-            const whatsappNumber = "75991919873";
-            const whatsappUrl = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`;
+    const total = items.reduce((sum, item) => sum + item.price, 0);
 
-            window.open(whatsappUrl, '_blank');
-            document.getElementById('thankYouMessage').style.display = 'block';
-        });
+    // Formatação da mensagem
+    const message = items.map(item => `${item.name}:\n  Quantidade: ${item.quantity}\n  Valor: R$${item.price.toFixed(2)}`).join('\n\n');
+    const finalMessage = `Olá, segue meu orçamento:\n\n${message}\n\nTotal (com frete): R$${total.toFixed(2)}`;
+    const whatsappNumber = "75991919873";
+    const whatsappUrl = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`;
+
+    window.open(whatsappUrl, '_blank');
+    document.getElementById('thankYouMessage').style.display = 'block';
+});
+
     </script>
 </body>
 </html>
