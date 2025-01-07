@@ -239,7 +239,7 @@
             document.getElementById('resultado').textContent = `Total: R$${total.toFixed(2)}`;
         }
 
-        document.getElementById('sendWhatsApp').addEventListener('click', function () {
+       document.getElementById('sendWhatsApp').addEventListener('click', function () {
     const modelo = document.getElementById('modelo');
     const modeloQtd = parseInt(document.getElementById('quantidade_modelo').value) || 0;
     const items = [{
@@ -262,17 +262,21 @@
         }
     });
 
-    const total = items.reduce((sum, item) => sum + item.price, 0);
+    // Calcula o total incluindo o frete
+    const frete = 75.00;
+    const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+    const total = subtotal + frete;
 
-    // Formatação da mensagem
+    // Formatação da mensagem para o WhatsApp
     const message = items.map(item => `${item.name}:\n  Quantidade: ${item.quantity}\n  Valor: R$${item.price.toFixed(2)}`).join('\n\n');
-    const finalMessage = `Olá, segue meu orçamento:\n\n${message}\n\nTotal (com frete): R$${total.toFixed(2)}`;
+    const finalMessage = `Olá, segue meu orçamento:\n\n${message}\n\nFrete: R$${frete.toFixed(2)}\nTotal: R$${total.toFixed(2)}`;
     const whatsappNumber = "75991919873";
     const whatsappUrl = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`;
 
     window.open(whatsappUrl, '_blank');
     document.getElementById('thankYouMessage').style.display = 'block';
 });
+
 
     </script>
 </body>
